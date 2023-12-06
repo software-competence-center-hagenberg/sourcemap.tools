@@ -110,11 +110,32 @@ function App() {
 
             {stackTrace?.fileNames.length ? (
               <ul className="space-y-2" data-testid="filenames-list">
-                {stackTrace.fileNames.map(fileName => (
-                  <li className="font-mono list-disc list-inside" key={fileName}>
-                    {fileName}
-                  </li>
-                ))}
+                {stackTrace.fileNames.map(fileName => {
+                  return (
+                    <li className="font-mono list-disc list-inside" key={fileName}>
+                      {fileName}{' '}
+                      <select
+                        className="select select-bordered select-xs w-full max-w-xs inline"
+                        disabled={sourceMaps.length === 0}
+                        onChange={evt => console.log(evt.target.value)}
+                        value={bindings[fileName]?.fileName || ''}
+                      >
+                        {sourceMaps.length > 0 ? (
+                          <>
+                            <option value="">-</option>
+                            {sourceMaps.map(sm => (
+                              <option key={sm.id} value={sm.fileName || sm.fileNameInline}>
+                                {sm.fileName || sm.fileNameInline}
+                              </option>
+                            ))}
+                          </>
+                        ) : (
+                          <option>Source maps were not provided</option>
+                        )}
+                      </select>
+                    </li>
+                  )
+                })}
               </ul>
             ) : (
               'No file names. Please provide the stack trace.'
